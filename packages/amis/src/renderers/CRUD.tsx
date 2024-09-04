@@ -410,6 +410,7 @@ export interface CRUDProps
     SpinnerExtraProps {
   store: ICRUDStore;
   pickerMode?: boolean; // 选择模式，用做表单中的选择操作
+  selectableMode?: 'cascade' | 'none';
 }
 
 const INNER_EVENTS: Array<CRUDRendererEvent> = [
@@ -430,6 +431,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
   static propsList: Array<keyof CRUDProps> = [
     'bulkActions',
     'itemActions',
+    'selectableMode',
     'mode',
     'orderField',
     'syncLocation',
@@ -503,7 +505,8 @@ export default class CRUD extends React.Component<CRUDProps, any> {
     filterDefaultVisible: true,
     loadDataOnce: false,
     autoFillHeight: false,
-    parsePrimitiveQuery: true
+    parsePrimitiveQuery: true,
+    selectableMode: 'none'
   };
 
   control: any;
@@ -2482,6 +2485,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
       syncLocation,
       children,
       bulkActions,
+      selectableMode,
       pickerMode,
       multiple,
       strictMode,
@@ -2572,6 +2576,7 @@ export default class CRUD extends React.Component<CRUDProps, any> {
               (this.hasBulkActionsToolbar() && this.hasBulkActions()) ||
               pickerMode
             ),
+            selectableMode: selectableMode,
             itemActions,
             multiple:
               multiple === void 0

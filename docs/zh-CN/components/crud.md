@@ -2033,6 +2033,66 @@ interface CRUDMatchFunc {
 }
 ```
 
+#### 嵌套
+
+当行数据中存在 `children` 字段时，CRUD 会自动识别为树形数据，并支持展开收起。
+
+```schema: scope="body"
+{
+    "type": "crud",
+    "name": "crud",
+    "syncLocation": false,
+    "api": "/api/mock2/crud/table2",
+    "headerToolbar": [
+        "bulkActions"
+    ],
+    "bulkActions": [
+        {
+            "label": "批量删除",
+            "actionType": "ajax",
+            "api": "delete:/api/mock2/sample/${ids|raw}",
+            "confirmText": "确定要批量删除?"
+        },
+        {
+            "label": "批量修改",
+            "actionType": "dialog",
+            "dialog": {
+                "title": "批量编辑",
+                "body": {
+                    "type": "form",
+                    "api": "/api/mock2/sample/bulkUpdate2",
+                    "body": [
+                        {
+                            "type": "hidden",
+                            "name": "ids"
+                        },
+                        {
+                            "type": "input-text",
+                            "name": "engine",
+                            "label": "Engine"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "columns": [
+        {
+            "name": "id",
+            "label": "ID"
+        },
+        {
+            "name": "engine",
+            "label": "Rendering engine"
+        },
+        {
+            "name": "browser",
+            "label": "Browser"
+        }
+    ]
+}
+```
+
 #### 批量操作数据域
 
 批量操作会默认将下面数据添加到数据域中以供**按钮行为**使用，需要注意的是**静态**和**批量操作**时的数据域是不同的。**静态数据域**是指渲染批量操作区域时能够获取到的数据，**批量操作数据域**是指触发按钮动作时能够获取到的数据，具体区别参考下表：

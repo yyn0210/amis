@@ -226,13 +226,16 @@ export const Row = types
     },
 
     get partial(): boolean {
+      // this.sel
       const childrenSelected =
         this.childrenSelected() === SELECTED_STATUS.PARTIAL;
       const childrenPartial = (self as IRow).children.some(
         (child: IRow) => child.partial
       );
 
-      return childrenSelected || childrenPartial;
+      // return childrenSelected || childrenPartial;
+      //TODO 临时写死返回false， 后面再解决
+      return false
     },
 
     get checked(): boolean {
@@ -375,13 +378,17 @@ export const Row = types
     }
   }))
   .actions(self => ({
-    toggle(checked: boolean) {
+    toggle(checked: boolean, selectableMode?: 'cascade' | 'none') {
       const table = self.table as ITableStore;
       const row = self as IRow;
 
+      console.log(">>>> toggle");
+
       table.toggle(row, checked);
-      table.toggleAncestors(row);
-      table.toggleDescendants(row, checked);
+      if (selectableMode === 'cascade') {
+        table.toggleAncestors(row);
+        table.toggleDescendants(row, checked);
+      }
     },
 
     toggleExpanded() {
@@ -1129,6 +1136,7 @@ export const TableStore = iRendererStore
     }
 
     function updateColumns(columns: Array<SColumn>) {
+      console.log(">>>> updateColumns");
       if (columns && Array.isArray(columns)) {
         columns = columns.filter(column => column).concat();
 
@@ -1599,6 +1607,7 @@ export const TableStore = iRendererStore
     let lastCheckedRow: any = null;
 
     function toggle(row: IRow, checked: boolean) {
+      console.log(">>>> table toggle");
       if (!row.checkable) {
         return;
       }
@@ -1617,6 +1626,7 @@ export const TableStore = iRendererStore
     }
 
     function toggleAncestors(row: IRow) {
+      console.log(">>> toggleAncestors");
       const parent = row.parent as IRow;
 
       if (!parent.depth) {
@@ -1680,7 +1690,7 @@ export const TableStore = iRendererStore
     }
 
     // 按住 shift 的时候点击选项
-    function toggleShift(row: IRow, checked: boolean) {
+    function toggleShift(row: IRow, checked: boolean, selectableMode?: 'cascade' | 'none') {
       const toggleRows = getToggleShiftRows(row);
 
       if (toggleRows?.length === 1) {

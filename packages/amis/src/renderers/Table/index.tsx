@@ -374,6 +374,7 @@ export interface TableProps extends RendererProps, SpinnerExtraProps {
   tableClassName?: string;
   source?: string;
   selectable?: boolean;
+  selectableMode?: 'cascade' | 'none';
   selected?: Array<any>;
   maxKeepItemSelectionLength?: number;
   valueField?: string;
@@ -474,6 +475,7 @@ export default class Table extends React.Component<TableProps, object> {
     'headingClassName',
     'source',
     'selectable',
+    'selectableMode',
     'columnsTogglable',
     'affixHeader',
     'affixColumns',
@@ -516,6 +518,7 @@ export default class Table extends React.Component<TableProps, object> {
     tableClassName: '',
     source: '$items',
     selectable: false,
+    selectableMode: 'cascade',
     columnsTogglable: 'auto',
     affixHeader: true,
     headerClassName: '',
@@ -590,6 +593,7 @@ export default class Table extends React.Component<TableProps, object> {
       store,
       columns,
       selectable,
+      selectableMode,
       columnsTogglable,
       draggable,
       orderBy,
@@ -625,6 +629,7 @@ export default class Table extends React.Component<TableProps, object> {
     store.update(
       {
         selectable,
+        selectableMode,
         draggable,
         columns,
         columnsTogglable,
@@ -878,6 +883,7 @@ export default class Table extends React.Component<TableProps, object> {
     changedEffect(
       [
         'selectable',
+        'selectableMode',
         'columnsTogglable',
         'draggable',
         'orderBy',
@@ -976,7 +982,9 @@ export default class Table extends React.Component<TableProps, object> {
   }
 
   async handleCheck(item: IRow, value?: boolean, shift?: boolean) {
-    const {store, data, dispatchEvent, selectable} = this.props;
+    const {store, data, dispatchEvent, selectable, selectableMode} = this.props;
+
+    console.log(">>>> handleCheck");
 
     if (!selectable) {
       return;
@@ -985,11 +993,11 @@ export default class Table extends React.Component<TableProps, object> {
     value = value !== undefined ? value : !item.checked;
 
     if (shift) {
-      store.toggleShift(item, value);
+      store.toggleShift(item, value, selectableMode);
     } else {
       // 如果picker的value是绑定的上层数量变量
       // 那么用户只能通过事件动作来更新上层变量来实现选中
-      item.toggle(value);
+      item.toggle(value, selectableMode);
     }
 
     const rendererEvent = await dispatchEvent(

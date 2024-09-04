@@ -440,6 +440,13 @@ const data = [
               grade: 'C'
             },
             {
+              engine: 'Trident',
+              browser: 'Internet Explorer 5.0',
+              platform: 'Win 95+',
+              version: '5',
+              grade: 'C'
+            },
+            {
               engine: 'Other browsers',
               browser: 'All others',
               platform: '-',
